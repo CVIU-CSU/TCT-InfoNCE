@@ -145,6 +145,7 @@ Or you can just eval our method by downloading the WSI features and MIL methods'
 
 The mil methods' weights and features extracted by clip-SimCLR can be accessed from [mil](https://pan.baidu.com/s/1iY9U4UzX-lusHYCQN7fwTw?pwd=5367) and [gc-features](https://pan.baidu.com/s/1iY9U4UzX-lusHYCQN7fwTw?pwd=5367), and should be put in the corresponding folder.
 ```bash
+cd mil-methods
 FEATURE_NAME=clip3
 DATASET=gc
 NUM_DIM=512
