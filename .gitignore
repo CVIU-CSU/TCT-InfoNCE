@@ -1,0 +1,13 @@
+output/
+test-imgs/
+__pycache__/
+openml/
+data/
+checkpoints/
+settings/environment.json
+debug/
+*.pt
+logs/
+.vscode/
+output*
+result-final*/
