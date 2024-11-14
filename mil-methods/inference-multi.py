@@ -17,7 +17,7 @@ def copy_file(args):
 
 
 class WsiPathUtil():
-    def __init__(self, wsi_root, output_root, num_parallel, is_ngc):
+    def __init__(self, wsi_root, output_root, num_parallel, dataset):
         NGC_SUB_PATHS = [
             'Unannotated_KSJ/Unannotated-KSJ-TCTNGC-NILM',
             'Unannotated_KSJ/Unannotated-KSJ-TCTNGC-POS',
@@ -28,10 +28,16 @@ class WsiPathUtil():
             'NILM',
             'POS'
         ]
-        if is_ngc:
+        FNAC_SUB_PATHS = [
+            ''
+        ]
+        if dataset=='ngc':
             sub_paths = NGC_SUB_PATHS
-        else:
+        elif dataset=='gc':
             sub_paths = GC_SUB_PATHS    
+        elif dataset=='fnac':
+            sub_paths = FNAC_SUB_PATHS
+            
         self.wsi_root = wsi_root
         self.output_root = output_root
         self.num_parallel = num_parallel
@@ -90,18 +96,18 @@ def main(args):
     train_label = args.train_label
     output_root = args.output_root
     num_parallel = args.num_parallel
-    if args.datasets.lower() == 'ngc' or 'gc':
-        dataset_p, dataset_l = [], []
-        with open(train_label, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                dataset_p.append(line.split(',')[0])
-                dataset_l.append(line.split(',')[1])
-            f.close()
-        dataset_p = np.array(dataset_p)
-        dataset_l = np.array(dataset_l)
-        dataset = NGCDatasetInfer(dataset_p,dataset_l,feature_root)
-        print(len(dataset))
+    
+    dataset_p, dataset_l = [], []
+    with open(train_label, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            dataset_p.append(line.split(',')[0])
+            dataset_l.append(line.split(',')[1])
+        f.close()
+    dataset_p = np.array(dataset_p)
+    dataset_l = np.array(dataset_l)
+    dataset = WsiDatasetInfer(dataset_p,dataset_l,feature_root)
+    print(len(dataset))
         
     # build model
     model_type = args.model
@@ -124,10 +130,7 @@ def main(args):
     model.load_state_dict(ckp)
 
     # inference
-    is_ngc = False
-    if args.datasets.lower() == 'ngc':
-        is_ngc = True
-    wsi_util = WsiPathUtil(wsi_root, output_root, num_parallel, is_ngc)
+    wsi_util = WsiPathUtil(wsi_root, output_root, num_parallel, args.datasets)
     loader_args = {
         'batch_size': args.batch_size,
         'num_workers': args.num_workers,
@@ -154,7 +157,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Filter high risk patches for ngc')
     
     # Dataset
-    parser.add_argument('--datasets', default='ngc', type=str, help='[camelyon16, ngc, gc]')
+    parser.add_argument('--datasets', default='ngc', type=str, help='[ngc, gc, fnac]')
     parser.add_argument('--feature_root', default='/root/project/BiomedCLIP-PUNCE/extract-features/result-final-ngc-features/resnet_simclr_infonce_ngc_none_224_none', type=str, help='wsi feature root path')
     parser.add_argument('--train_label', default='/root/project/BiomedCLIP-PUNCE/mil-methods/ngc-labels/train_label.csv',type=str, help='the path of train wsi list')
     parser.add_argument('--wsi_root', default='/root/commonfile/wsi/ngc-2023-1333', type=str, help='Dataset root path')

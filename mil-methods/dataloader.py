@@ -235,7 +235,7 @@ class GcDataset(C16Dataset):
         else:
             return features, label, file_path
 
-class NGCDatasetInfer(Dataset):
+class WsiDatasetInfer(Dataset):
 
     def __init__(self, file_name, file_label,root,persistence=False,keep_same_psize=0,is_train=False):
         """
@@ -243,7 +243,7 @@ class NGCDatasetInfer(Dataset):
         :param images: 
         :param transform: optional transform to be applied on a sample
         """
-        super(NGCDatasetInfer, self).__init__()
+        super(WsiDatasetInfer, self).__init__()
         self.file_name = file_name
         self.slide_label = file_label
         self.slide_label = [int(_l) for _l in self.slide_label]
