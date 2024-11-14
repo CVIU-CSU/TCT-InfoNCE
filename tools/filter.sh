@@ -2,8 +2,7 @@
 
 ######################## step1: extract features
 cd extract-features
-export CUDA_VISIBLE_DEVICES=1,2,3
-GPU_NUMBERS=3
+GPU_NUMBERS=4
 FEAT_DIR=biomedclip-test
 DATASET=fnac
 BASE_MODEL=biomedclip # biomedclip, clip, plip
