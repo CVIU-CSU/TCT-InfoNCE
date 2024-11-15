@@ -83,8 +83,7 @@ bash tools/mil.sh
 ```
 
 ## Test CSD
-You can eval our method on CSD dataset by downloading the WSI features and MIL methods' weights from [Baiduyun](https://pan.baidu.com/s/1iY9U4UzX-lusHYCQN7fwTw?pwd=5367). Put the download file to `TCT-INFONCE` folder, which is this project root.
-
+You can eval our method on CSD dataset by downloading the WSI features and MIL methods' weights from [Baiduyun](https://pan.baidu.com/s/1iY9U4UzX-lusHYCQN7fwTw?pwd=5367). Put the download file to `TCT-InfoNCEI` folder, which is this project root.
 ```bash
 bash tools/test.sh
 ```

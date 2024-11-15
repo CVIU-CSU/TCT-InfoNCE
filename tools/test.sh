@@ -2,7 +2,7 @@
 
 # Extract feature
 cd mil-methods
-FEATURE_NAME=clip3
+FEATURE_NAME=plip3
 DATASET=gc
 NUM_DIM=512
 
