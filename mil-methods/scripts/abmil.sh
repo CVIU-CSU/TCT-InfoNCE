@@ -26,7 +26,7 @@ python3 mil.py --project=$PROJECT_NAME \
                 --baseline=attn \
                 --train_val \
                 --seed=2024 \
-                --wandb
+                # --wandb
 
 CHECKPOINT_PATH=$OUTPUT_PATH/$PROJECT_NAME/$FEATURE_NAME-abmil-$DATASET-trainval
 python3 eval.py --label_path=$LABEL_PATH  \

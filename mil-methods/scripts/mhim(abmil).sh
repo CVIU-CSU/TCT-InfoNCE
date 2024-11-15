@@ -30,7 +30,7 @@ python3 mil.py --project=$PROJECT_NAME \
                 --mask_ratio=0.5 \
                 --mask_ratio_l=0. \
                 --seed=2024 \
-                --wandb
+                # --wandb
 
 CHECKPOINT_PATH="$OUTPUT_PATH/$PROJECT_NAME/$1-mhim(abmil)-$2-trainval"
 python3 eval.py --ckp_path=$CHECKPOINT_PATH \
