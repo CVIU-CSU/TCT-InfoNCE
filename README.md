@@ -25,7 +25,7 @@ cd TCT-InfoNCE
 2. Requirements
 
 ```bash
-conda create -n biomed python=3.8
+conda create -n tct-info python=3.8
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
 pip install open_clip_torch==2.23.0 transformers==4.35.2 matplotlib
 pip install h5py scikit-learn==0.22.1 future==0.18.3
@@ -49,7 +49,7 @@ mkdir extract-features/output-model
     <img src="imgs/results.png" width="90%"> <br>
 
 - **Model Download**
-The models and gc-features can be accessed from [Baiduyun](https://pan.baidu.com/s/1iY9U4UzX-lusHYCQN7fwTw?pwd=5367)
+The models and gc-features can be accessed from [Baiduyun](https://pan.baidu.com/s/1iY9U4UzX-lusHYCQN7fwTw?pwd=5367).
 
 ## Train FNAC-2019
 The CSD dataset labels are based on the WSI as the fundamental unit, and the details can be found in the `datatools` folder. Owing to the absence of permission to publicly disclose the CSD dataset, we have presented the experimental procedure for the FNAC-2019 dataset, which exhibits a similar procedure to that of the CSD dataset.
