@@ -109,7 +109,7 @@ def main():
     parser.add_argument('--world_size', type=int, default=1)
     parser.add_argument('--target_patch_size', type=int, nargs='+', default=(224, 224))
     # model options
-    parser.add_argument('--base_model', default='resnet50', type=str, choices=['biomedclip', 'resnet50', 'resnet34', 'resnet18', 'plip', 'clip'])
+    parser.add_argument('--base_model', default='resnet50', type=str, choices=['biomedclip', 'resnet50', 'resnet50_cao', 'resnet34', 'resnet18', 'plip', 'clip'])
     parser.add_argument('--with_adapter', action='store_true')
     parser.add_argument('--ckp_path', type=str, default=None)
     parser.add_argument('--without_head', action='store_true')
@@ -167,6 +167,9 @@ def main():
     if args.base_model == 'resnet50':
         backbone = ResnetBackbone(pretrained=True, name='resnet50')
         input_dim = 1024
+    elif args.base_model == 'resnet50_cao':
+        backbone = ResnetBackbone(pretrained=True, name='resnet50_cao')
+        input_dim = 512
     elif args.base_model == 'resnet34':
         backbone = ResnetBackbone(pretrained=True, name='resnet34')
         input_dim = 512

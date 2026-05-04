@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 cd extract-features
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 # GPU_NUMBERS=3
 # FEAT_DIR=biomedclip-test
 # DATASET=fnac
@@ -16,27 +17,45 @@ cd extract-features
 #         --output_path=${OUTPUT_PATH} \
 #         --feat_dir=${FEAT_DIR} \
 #         --wsi_root=${WSI_ROOT} \
+##         --multi_gpu \
+#         --batch_size=32 \
+#         --num_workers=64
+
+# GPU_NUMBERS=4
+# FEAT_DIR=biomedclip-adapter
+# WSI_ROOT=../data/FNAC-2019/split_data
+# OUTPUT_PATH=../data/fnac-features
+# BASE_MODEL=biomedclip
+# DATASET=fnac
+# CKP_PATH='./output-model/simclr-infonce/_simclr_infonce_filterfnac_20_224_4*256/_simclr_infonce_filterfnac_20_224_4*256_epoch200.pt'
+# python -m torch.distributed.launch --nproc_per_node=$GPU_NUMBERS --master_port=12345 extract_features_tct.py \
+#         --base_model=${BASE_MODEL} \
+#         --dataset=${DATASET} \
+#         --output_path=${OUTPUT_PATH} \
+#         --feat_dir=${FEAT_DIR} \
+#         --wsi_root=${WSI_ROOT} \
 #         --ckp_path=${CKP_PATH} \
+#         --with_adapter \
+#         --target_patch_size 224 224 \
 #         --multi_gpu \
 #         --batch_size=32 \
 #         --num_workers=64
 
+
 GPU_NUMBERS=4
-FEAT_DIR=biomedclip-adapter
-WSI_ROOT=../data/FNAC-2019/split_data
-OUTPUT_PATH=../data/fnac-features
-BASE_MODEL=biomedclip
-DATASET=fnac
-CKP_PATH='./output-model/simclr-infonce/_simclr_infonce_filterfnac_20_224_4*256/_simclr_infonce_filterfnac_20_224_4*256_epoch200.pt'
+FEAT_DIR=resnet1
+WSI_ROOT=/home1/wsi/gc-224
+OUTPUT_PATH=/home1/wsi/gc-all-features/frozen
+BASE_MODEL=resnet50 #  resnet50_cao
+DATASET=gc
 python -m torch.distributed.launch --nproc_per_node=$GPU_NUMBERS --master_port=12345 extract_features_tct.py \
         --base_model=${BASE_MODEL} \
         --dataset=${DATASET} \
         --output_path=${OUTPUT_PATH} \
         --feat_dir=${FEAT_DIR} \
         --wsi_root=${WSI_ROOT} \
-        --ckp_path=${CKP_PATH} \
-        --with_adapter \
         --target_patch_size 224 224 \
         --multi_gpu \
         --batch_size=32 \
         --num_workers=64
+

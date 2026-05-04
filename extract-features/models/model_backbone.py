@@ -19,13 +19,47 @@ model_urls = {
     'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
 }
-
     
 
 def resnet_backbone(pretrained, name):
     if name == 'resnet50':
         model_baseline = models.resnet50(pretrained=pretrained)
         model_baseline.layer4 = torch.nn.Identity()
+    elif name == 'resnet50_cao':
+        resnet50_model_path = '/home/huangjialong/projects/TCT-InfoNCE/mil-methods/weights/miccai2023'
+        pth = torch.load(resnet50_model_path, map_location='cpu')
+        if isinstance(pth, dict) and 'state_dict' in pth:
+            weights = pth['state_dict']
+        elif isinstance(pth, dict) and 'model' in pth:
+            weights = pth['model']
+        else:
+            weights = pth
+
+        if not isinstance(weights, (dict, nn.modules.container.OrderedDict)):
+            raise TypeError(f'Unsupported checkpoint type: {type(weights)}')
+
+        if any(key.startswith('module.encoder_q.') for key in weights.keys()):
+            new_weights = {
+                key.replace('module.encoder_q.', ''): value
+                for key, value in weights.items()
+                if key.startswith('module.encoder_q.')
+            }
+            resnet = models.resnet50(pretrained=False)
+            resnet.fc = nn.Sequential(
+                nn.Linear(2048, 2048), nn.ReLU(), nn.Linear(2048, 128)
+            )
+            print(resnet.load_state_dict(new_weights, strict=False))
+            return resnet
+
+        # miccai2023 is a sequential ResNet34 feature extractor without the classifier head.
+        resnet = models.resnet34(pretrained=False)
+        feature_extractor = nn.Sequential(
+            *list(resnet.children())[:-2],
+            nn.AdaptiveAvgPool2d((1, 1)),
+            nn.Flatten(),
+        )
+        print(feature_extractor.load_state_dict(weights, strict=False))
+        return feature_extractor
     elif name == 'resnet34':
         model_baseline = models.resnet34(pretrained=pretrained)
     elif name == 'resnet18':
@@ -66,18 +100,7 @@ def plip_backbone():
 class ResnetBackbone(nn.Module):
     def __init__(self, pretrained, name):
         super(ResnetBackbone, self).__init__()
-        if name == 'resnet50':
-            model_baseline = models.resnet50(pretrained=pretrained)
-            model_baseline.layer4 = torch.nn.Identity()
-        elif name == 'resnet34':
-            model_baseline = models.resnet34(pretrained=pretrained)
-        elif name == 'resnet18':
-            model_baseline = models.resnet18(pretrained=pretrained)
-            
-        model_baseline.fc = torch.nn.Identity()
-        pretrained_dict = model_zoo.load_url(model_urls[name])
-        model_baseline.load_state_dict(pretrained_dict, strict=False)
-        self.model = model_baseline
+        self.model = resnet_backbone(pretrained, name)
         self.preprocess_val = transforms.Compose([
             transforms.Resize((224,224)),
             transforms.ToTensor(),
